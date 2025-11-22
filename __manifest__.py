@@ -1,0 +1,31 @@
+{
+    "name": "EGP HR Employee",
+    "version": "17.0.1.0.0",
+    "summary": "EGP Human Resource Module",
+    'sequence': -100,
+    'category': 'Human Resources',
+    "description": "",
+    'depends': ['maintenance', 'hr', 'mail', 'hr_skills', 'egp_hr_org_structure', 'gamification'],
+    'data': [
+        'security/egp_hr_employee_security.xml',
+        'security/ir.model.access.csv',
+        'views/egp_hr_employee.xml',
+        'data/egp_hr_employee_default_data.xml',
+        'report/egp_hr_employee_report.xml',
+        'report/egp_hr_report_paper_format.xml',
+        'views/egp_hr_print_action.xml',
+        # 'views/egp_hr_resume.xml',
+        'views/employee_search.xml',
+    ],
+    # "assets": {
+    #     'web.assets_backend': [
+    #         'egp_hr/static/src/js/custom_search_button.js',
+    #     ],
+    # },
+    "author": "Nasratullah Shafiq",
+    "website": "https://mcit.gov.af/",
+    "installable": True,
+    "application": True,
+    "auto_install": False,
+    "license": 'OPL-1',
+}
