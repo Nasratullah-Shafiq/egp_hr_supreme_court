@@ -4,24 +4,24 @@
     "summary": "EGP Human Resource Module",
     'sequence': -100,
     'category': 'Human Resources',
-    "description": "",
+    "description": "Employee HR Module Supreme Court",
     'depends': ['maintenance', 'hr', 'mail', 'hr_skills', 'egp_hr_org_structure', 'gamification'],
     'data': [
         'security/egp_hr_employee_security.xml',
         'security/ir.model.access.csv',
         'views/egp_hr_employee.xml',
         'data/egp_hr_employee_default_data.xml',
-        'report/egp_hr_employee_report.xml',
+        # 'report/egp_hr_employee_report.xml',
         'report/egp_hr_report_paper_format.xml',
         'views/egp_hr_print_action.xml',
         # 'views/egp_hr_resume.xml',
         'views/employee_search.xml',
     ],
-    # "assets": {
-    #     'web.assets_backend': [
-    #         'egp_hr/static/src/js/custom_search_button.js',
-    #     ],
-    # },
+    'assets': {
+        'web.assets_backend': [
+            'enhanced_employee/static/src/components/**/*',
+        ],
+    },
     "author": "Nasratullah Shafiq",
     "website": "https://mcit.gov.af/",
     "installable": True,
