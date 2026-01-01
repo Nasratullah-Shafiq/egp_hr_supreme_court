@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from email.policy import default
 from odoo import fields, models, api
 
 
@@ -67,8 +66,17 @@ class HrEmployeeInherit(models.Model):
         ('o-', 'O-'),
     ], string="Blood Group", groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
 
+    ethnicity_id = fields.Many2one('hr.ethnicity', string='Ethnicity', ondelete='set null')
+    language_id = fields.Many2one('hr.language', string='Language', ondelete='set null')
     start_date = fields.Date(string='Start Date', groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert"),
     end_date = fields.Date(string='End Date', groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert"),
+
+    religion_type = fields.Selection([('حنفی', 'حنفی'),
+                                      ('شافعی', 'شافعی'),
+                                      ('مالکی', 'مالکی'),
+                                      ('حنبلی', 'حنبلی')],
+                                     string='Religion Type',
+                                     groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
 
     identification_type = fields.Selection([('paper_id_card', 'Paper ID card'),
                                             ('electronic_id_card', 'Electronic ID Card')],
@@ -105,12 +113,15 @@ class HrEmployeeInherit(models.Model):
                                       groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
     passport_end_date = fields.Date(string='Expiry Date', tracking=True,
                                     groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
-    passport_type = fields.Selection([('ordinary_passport', 'Ordinary Passport'), ('diplomatic_passport', 'Diplomatic Passport'), ('service_official_passport', 'Service (Official) Passport'), ('special_passport', 'Special Passport')], string='Passport Type',
+    passport_type = fields.Selection(
+        [('ordinary_passport', 'Ordinary Passport'), ('diplomatic_passport', 'Diplomatic Passport'),
+         ('service_official_passport', 'Service (Official) Passport'), ('special_passport', 'Special Passport')],
+        string='Passport Type',
+        tracking=True,
+        groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert", default='ordinary_passport')
+
+    emp_gender = fields.Selection([('male', 'Male'), ('female', 'Female'), ('other', 'Other')], string='Gender',
                                   tracking=True,
-                                  groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert", default='ordinary_passport')
-
-
-    emp_gender = fields.Selection([('male', 'Male'), ('female', 'Female'), ('other', 'Other')], string='Gender', tracking=True,
                                   groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
     emp_date_of_birth = fields.Date(string='Date Of Birth', tracking=True,
                                     groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
@@ -123,8 +134,10 @@ class HrEmployeeInherit(models.Model):
     emp_nationality = fields.Many2one('res.country', string="Nationality", tracking=True, ondelete='cascade',
                                       groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
 
-    religion = fields.Char(string='Religion', tracking=True, groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
-    today_date = fields.Date(string="Today's Date", tracking=True, default=fields.Date.today, groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
+    religion = fields.Char(string='Religion', tracking=True,
+                           groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
+    today_date = fields.Date(string="Today's Date", tracking=True, default=fields.Date.today,
+                             groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
     # Define the list of provinces once
     PROVINCES = [
         ('Badakhshan', 'Badakhshan'),
@@ -167,11 +180,9 @@ class HrEmployeeInherit(models.Model):
     temporary_province = fields.Selection(PROVINCES, string="Province",
                                           groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
     passport_place_of_issue = fields.Selection(PROVINCES, string="Place of Issue",
-                                          groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
-    nic_place_of_issue = fields.Selection(PROVINCES, string="Place of Issue",
                                                groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
-
-
+    nic_place_of_issue = fields.Selection(PROVINCES, string="Place of Issue",
+                                          groups="egp_hr.group_employee_officers,egp_hr.group_employee_expert")
 
     single_fire_record = fields.Char(
         compute='_compute_single_fire_record',
@@ -198,20 +209,13 @@ class HrEmployeeInherit(models.Model):
     def employee_fire(self):
         print("These are the fired employees!")
 
-
     def active_employee(self):
         print("These are the active employees!")
-
-
-
-
-
-
 
     has_equipment_records = fields.Char(
         string="Has Equipment Records",
         compute="_compute_has_equipment_records",
-         # No need to store this computed value
+        # No need to store this computed value
     )
 
     @api.depends_context('uid')  # Recomputes the value when the context changes
@@ -251,7 +255,6 @@ class HrEmployeeInherit(models.Model):
             message = "Hello, this is a predefined message!"
             self.send_message_to_employee(employee.id, message)
 
-
     # this code send a message for a specific employee
     @api.model
     def send_message_to_employee(self, employee_id, message):
@@ -268,3 +271,22 @@ class HrEmployeeInherit(models.Model):
             })
         else:
             raise ValueError('The selected employee does not have an associated user.')
+
+
+class HrEthnicity(models.Model):
+    _name = 'hr.ethnicity'
+    _description = 'Employee Ethnicity'
+    _order = 'name'
+
+    name = fields.Char(string='Ethnicity', required=True, translate=True)
+    employee_ids = fields.One2many('hr.employee', 'ethnicity_id', string='Employees')
+
+
+
+class HrLanguage(models.Model):
+    _name = 'hr.language'
+    _description = 'Employee Language'
+    _order = 'name'
+
+    name = fields.Char(string='Language', required=True, translate=True)
+    employee_ids = fields.One2many('hr.employee', 'language_id', string='Employees')
