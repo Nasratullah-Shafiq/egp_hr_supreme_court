@@ -189,6 +189,94 @@ class HrEmployeeInherit(models.Model):
         string="Single Fire Record"
     )
 
+
+
+    def action_employee_travel(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Travel",
+            "res_model": "employee.travel",
+            "view_mode": "tree,form",
+            "domain": [("employee_id", "=", self.id)],
+            "target": "current",
+        }
+
+    def action_employee_education(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Education",
+            "res_model": "employee.education",
+            "view_mode": "tree,form",
+            "domain": [("employee_id", "=", self.id)],
+            "target": "current",
+        }
+
+    def action_employee_relatives(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Relatives Information",
+            "res_model": "employee.relative",  # Make sure this model exists
+            "view_mode": "tree,form",
+            "domain": [("employee_id", "=", self.id)],
+            "target": "current",
+        }
+
+    def action_employee_training(self):
+        self.ensure_one()  # Make sure you are acting on a single employee
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Training Information",
+            "res_model": "employee.training",  # Make sure this model exists
+            "view_mode": "tree,form",
+            "domain": [("employee_id", "=", self.id)],
+            "target": "current",
+        }
+
+    def action_employee_punishment(self):
+        self.ensure_one()  # Make sure a single employee is selected
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Employee Punishment",
+            "res_model": "employee.punishment",  # The model for punishments
+            "view_mode": "tree,form",
+            "domain": [("employee_id", "=", self.id)],  # Only show records for this employee
+            "target": "current",
+        }
+
+    def action_employee_reward(self):
+        self.ensure_one()  # Only allow single employee at a time
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Employee Rewards",
+            "res_model": "employee.reward",  # The model for rewards
+            "view_mode": "tree,form",
+            "domain": [("employee_id", "=", self.id)],  # Only show this employee's rewards
+            "target": "current",
+        }
+
+    def action_employee_retirement(self):
+        self.ensure_one()  # Only allow one employee at a time
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Employee Retirement",
+            "res_model": "employee.retirement",  # Make sure this model exists
+            "view_mode": "tree,form",
+            "domain": [("employee_id", "=", self.id)],  # Only show this employee's retirement records
+            "target": "current",
+        }
+
+
+
+
+
+
+
+
+
+
     def custom_filter_action(self):
         # Implement custom action when the button is clicked
         return {
@@ -271,6 +359,8 @@ class HrEmployeeInherit(models.Model):
             })
         else:
             raise ValueError('The selected employee does not have an associated user.')
+
+
 
 
 class HrEthnicity(models.Model):
